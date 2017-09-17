@@ -20,7 +20,7 @@ from account import urls as account_urls
 from playlist import urls as playlist_urls
 urlpatterns = []
 urlpatterns += [
-    url(r'^admin/', include([admin.site.urls])),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^account/', include(account_urls)),
     url(r'^playlist/', include(playlist_urls))
 ] 
