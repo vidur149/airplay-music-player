@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% load staticfiles %}
+		<title>Music Player</title>
+		{% block staticfiles %}
+			<link rel = "stylesheet" href = "{% static "font-awesome-4.3.0/css/font.css" %}">       
+			<link rel = "stylesheet" href = "{% static "common/css/index.css" %}" type="text/css">
+        	<script src="{% static "common/js/allSongs.js" %}" type="application/ecmascript"></script>
+        	<script src="{% static "common/js/playlistManager.js" %}" type="application/ecmascript"></script>
+        	<script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/1.6.0/annyang.min.js"></script>
+        	<script src=" {% static 'dist/id3-minimized.js' %}" type="text/javascript"></script>
+        {% endblock %}
+	</head>
+		{% load static %}
+    	<body data-media-url="{% get_media_prefix %}"> 
+    	{% block header %}
+    			<header>
+    			<a href="{% url 'home' %}"><img src="{% static 'common/images/air.png' %}"></a>
+    			<form method = 'POST' action = "{% url 'main' %}">
+					{% csrf_token %}
+					{{ form.as_p }}
+					<input type = 'submit' name = 'submit' value='SIGN IN'>
+					<div class = 'options'>
+						<a id='signup' href = "{% url 'signup' %}">SIGN UP</a>
+					</div>
+				</form>
+    			 <nav>
+    			 </nav>
+    			</header>
+    		{% endblock %}   	
+    		<main>
+    		{% block aside %}
+    			<aside id="drop" class="drop">
+						<h2>Drop Music Files Here</h2>
+				</aside>
+			{% endblock %}
+			{% block content %}		
+				<article>
+					<section id="tabs">
+						<div id='new-playlist'><i class="fa fa-plus fa-2x"></i></div>
+						<input id="tab-1" type="radio" name="radio-set" checked="checked" class='input-1' />
+			        	<label for="tab-1">playlist 1</label>
+			        	<div class="content">
+							<div id='cont-1' class='input-1'></div>
+						</div>
+							<div id='back'>						
+					</section>
+						<audio id="song">
+							<source id="audio">
+						</audio>
+					<div id='progress'></div>
+					<section id="buttons">
+						<div id="loop" class="buttons"><i class="fa fa-repeat fa-3x"></div></i>
+						<div id="previous" class="buttons"><i class="fa fa-backward fa-3x"></i></div> 
+						<div id="play" class="buttons"><i class="fa fa-play fa-3x"></i></div>
+					 	<div id="pause" class="buttons"><i class="fa fa-pause fa-3x"></i></div> 
+						<div id="next" class="buttons"><i class="fa fa-forward fa-3x"></i></div>
+						<div id="up" class="buttons"><i class="fa fa-volume-up fa-3x"></i></div>
+						<div id="down" class="buttons"><i class="fa fa-volume-down fa-3x"></i></div>
+					</section>
+				</article>
+			{% endblock %}	
+			</main>
+			{% block call_to_js %}
+				<script>
+					function init()
+					{
+						myMusicPlayer.init('drop');	
+						managePlaylist.voice();
+						managePlaylist.init('new-playlist','cont-1','audio');		
+            	    }		
+					window.addEventListener('load',init);
+            	</script>
+			{% endblock %}
+	</body>
+</html>

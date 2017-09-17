@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+	{% load staticfiles %}
+	<head>
+		<link rel = "stylesheet" href = "{% static "home/css/index.css" %}">
+	</head>
+	<body>
+		<form>
+			{% csrf_token %}
+			{{ form.as_p }}
+			<input type = 'submit' vlaue = 'SIGN IN' name = 'submit'>
+		</form>
+		<a> SIGN UP </a>
+		<a> DROP AND PLAY </a>
+	</body>
+</html>

@@ -1,0 +1,122 @@
+{% extends 'base/index.html' %}
+
+{% load staticfiles %}
+{% block staticfiles %}
+	<link rel = "stylesheet" href = "{% static "font-awesome-4.3.0/css/font.css" %}">       
+	<link rel = "stylesheet" href = "{% static "common/css/index.css" %}" type="text/css">
+	<link rel = "stylesheet" href = "{% static "account/css/home.css" %}" type="text/css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/1.6.0/annyang.min.js"></script>
+    <script src=" {% static 'dist/id3-minimized.js' %}" type="text/javascript"></script>	
+    <script src=" {% static "account/js/try.js" %}" type="text/javascript"></script>
+    <script src=" {% static "account/js/filehandle.js" %}" type="text/javascript"></script>
+    <script src=" {% static "account/js/wavesurfer.js" %}" type="text/javascript"></script>
+    <script src=" {% static "account/js/timeline.js" %}" type="text/javascript"></script>	
+{% endblock %}
+
+{% block header %}
+    <header>
+    	<a href="{% url 'home' %}"><img src="{% static 'common/images/air.png' %}"></a>
+    	<h2>Welcome, {{ request.user }}</h2>
+    	<nav>
+    		<a href="{% url 'settings' %}">settings</a>
+    		<a href="{% url 'logout' %}">logout</a>
+    		{% if request.user.profile_pic %}
+    			<div><img src="{{ request.user.profile_pic.url }}" id='dp'><div/>
+    		{% else %}
+    			<div><img src="{% static 'account/css/nopicture.png' %}" id='dp'><div/>
+    		{% endif %}
+    	</nav>
+    </header>
+ {% endblock %}  
+{% block aside %}
+	<aside>
+		<h2>My Library</h2>
+		<form method = 'POST' action="{% url 'home' %}" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<input type='submit' value='add' name='add'>
+		</form>
+		{% if request.user.songfile_set.all %}
+			{% csrf_token %}
+			{% for song in request.user.songfile_set.all %}
+			<li class='all_songs'>{{ song }}<a href="{% url 'delete_song' id1=song.id %}"><i class="fa fa-times" id='position'></i></a></li>
+			{% endfor %}
+		{% else %}
+			<li>No Songs </li>
+		{% endif %}
+	</aside>
+{% endblock %}
+
+{% block content %}		
+	<article data-user="{{ request.user.id }}">
+		<section id="tabs">
+			<div id='new-playlist'><a href="{% url 'new_playlist' %}"><i class="fa fa-plus fa-2x"></i></a></div>
+			{% for playlist in play %}
+				<input id="tab-{{ forloop.counter }}" type="radio" name="radio-set" checked="checked" class='input-{{ forloop.counter }}' />
+<label for="tab-{{ forloop.counter }}">{{ playlist.name }}<a href="{% url 'delete_playlist' id=playlist.id %}"><i class="fa fa-times"></i></a></label>
+			{%	endfor %}
+			<div class="content">
+			{% for playlist in play %}
+				<div id='cont-{{ forloop.counter }}' class='input-{{ forloop.counter }}'>
+				{% if playlist.song %}
+						<li id="edit"><a href="{% url 'edit_playlist' id=playlist.id %}">EDIT PLAYLIST</a></li>
+					{% for song in playlist.song.all %}
+				<li>{{ song }} <a href="{% url 'delete_from_playlist' id1=song.id  id2=playlist.id %}"><i class="fa fa-times"></i></a></li>
+					{% endfor %}
+				{% endif %}
+				</div>	
+			{%	endfor %}
+				</div>		
+		</section>
+		<audio id="song">
+			<source id="audio">
+		</audio>
+		<div id='progress'></div>
+		<div id='timeline'></div>
+	</article>
+			
+				<i class="fa fa-chevron-up fa-2x" id='tog'>
+				<section id="buttons">
+					<div id="previous" class="buttons"><i class="fa fa-backward fa-3x"></i></div> 
+					<div id="play" class="buttons"><i class="fa fa-play fa-3x"></i></div>
+					<i class="fa fa-pause fa-3x buttons" id= 'pause'></i> 
+					<div id="next" class="buttons"><i class="fa fa-forward fa-3x"></i></div>
+					<div id="up" class="buttons"><i class="fa fa-volume-up fa-3x"></i></div>
+					<div id="down" class="buttons"><i class="fa fa-volume-down fa-3x"></i></div>
+				</section>
+				</i>		
+{% endblock %}	
+
+{% block call_to_js %}
+	<script>
+		function init()
+		{	
+			managePlaylist.voice();
+			managePlaylist.init('audio');
+			manageFile.init('id_song');	
+		}		
+		window.addEventListener('load',init);
+	</script>
+	<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1612851402299693',
+      xfbml      : true,
+      version    : 'v2.4'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+{% endblock %}
+
+
+
+
+

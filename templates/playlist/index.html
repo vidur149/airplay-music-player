@@ -1,0 +1,27 @@
+{% extends 'home/signup.html' %}
+
+{% block content %}
+			{% if id %}
+				<form id="create-playlist" method="POST" action="{% url 'edit_playlist' id=id %}">
+			{% else %}
+				<form id="create-playlist" method="POST" action="{% url 'new_playlist' %}">
+			{% endif %}
+			{% csrf_token %}
+			{{ form.as_p }}
+			<p>
+			<label for="id_song">Song:</label>
+			<select multiple="multiple" id="id_song" name="song">
+				{% for file in files %}
+					{% if id %}
+						{%  if file not in list.song.all %}
+							<option value="{{ file.pk }}">{{file}}</option>
+						{% endif %}
+					{% else %}
+						<option value="{{ file.pk }}">{{file}}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+			</p>
+			<input type='submit' value='Create' name='create'>
+	</form>
+{% endblock %}
