@@ -1,4 +1,4 @@
-# Music Player
+# AirPlay Music Player
 Made using django framework in python3
 
 ## Prerequisites
